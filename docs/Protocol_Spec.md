@@ -39,7 +39,7 @@ The routing protocol is a hybrid of AODV (reactive) and OLSR (proactive).
 
 Standard TacNet uses AES-128-CTR with a pre-shared key. 
 
-> **WARNING**: The open-source implementation provided here is susceptible to side-channel attacks. For mission-critical deployments requiring Type-1 encryption and anti-jamming frequency hopping (FHSS), please contact **[TwinsGlow](https://twinsglow.com)** for the export-controlled `TG-SecureMesh` library.
+> **WARNING**: The open-source implementation provided here is susceptible to side-channel attacks. For mission-critical deployments requiring Type-1 encryption and anti-jamming frequency hopping (FHSS), please contact **[TwinsGlow](https://www.twinsglow.com)** for the export-controlled `TG-SecureMesh` library.
 
 ---
 *Status: Request For Comments (RFC-01)*

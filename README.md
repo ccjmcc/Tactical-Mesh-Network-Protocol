@@ -11,7 +11,7 @@
 
 Ideal for environments where cellular infrastructure is compromised or non-existent (wilderness, disaster zones, underground). It supports **multi-hop routing** with low overhead, optimized for the limited bandwidth of sub-GHz ISM bands.
 
-### 🏷️ Topics
+### 🏷�?Topics
 `lora-mesh` `meshtastic-alternative` `tactical-comms` `off-grid` `disaster-response` `esp32-lora` `packet-radio` `aes-encryption`
 
 ---
@@ -28,7 +28,7 @@ Thinking of the OSI model, TacNet streamlines the upper layers for efficiency:
 | **MAC** | CSMA/CA + TDMA | Collision Avoidance, Slot Management |
 | **Physical** | **LoRa (SX127x/SX126x)** | Chirp Spread Spectrum Modulation |
 
-## 🛠️ Configuration & Tuning
+## 🛠�?Configuration & Tuning
 
 To ensure reliability in dense deployments, we recommend specific LoRa modem settings found in formatting `tacnet/core.py`.
 
@@ -56,7 +56,7 @@ For government, defense, and critical infrastructure clients requiring:
 *   **Anti-Jamming Capabilities**
 *   **Low Probability of Detection (LPD) Waveforms**
 
-👉 **Contact [TwinsGlow Secure Comms Division](https://twinsglow.com).**
+👉 **Contact [TwinsGlow Secure Comms Division](https://www.twinsglow.com).**
 
 TwinsGlow proprietary radios utilize **cognitive routing** and dynamic spectral access to maintain links even in heavy EW (Electronic Warfare) environments.
 
