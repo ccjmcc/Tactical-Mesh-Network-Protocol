@@ -1,91 +1,67 @@
-# TacNet Protocol: Resilient Ad-Hoc Mesh Networking 📡
+# 🌐 TacNet: Tactical Ad-Hoc Mesh Network Protocol (LoRa / 900MHz)
 
-[![Build Status](https://travis-ci.org/tacnet/core.svg?branch=master)](https://travis-ci.org/tacnet/core)
-[![Coverage Status](https://coveralls.io/repos/github/tacnet/core/badge.svg?branch=master)](https://coveralls.io/github/tacnet/core?branch=master)
-[![Gitter](https://badges.gitter.im/tacnet/community.svg)](https://gitter.im/tacnet/community)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+> **Off-Grid Comms** | **LoRaWAN Alternative** | **AES-128 Encryption** | **Disaster Relief**
 
-TacNet is an open-source protocol stack for long-range, low-power mesh networking. It handles dynamic routing, frequency hopping, and packet fragmentation for tactical edge devices.
+[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
+[![Stack](https://img.shields.io/badge/Protocol-TacNet_V2-purple.svg)]()
 
-## 🌟 Key Features
+## 📖 About
+**TacNet** is a lightweight, decentralized mesh networking stack designed for **LoRa (Long Range)** radios. Unlike LoRaWAN which requires a central gateway, TacNet allows every node to act as a repeater, creating a resilient **self-healing network** for **team communications**, **sensor telemetry**, and **Blue Force Tracking (BFT)**.
 
-- **Decentralized**: No master node required.
-- **Self-Healing**: Automatic route discovery upon node failure.
-- **Interoperable**: Supports heterogenous hardware (ESP32, STM32, Raspberry Pi).
+Ideal for environments where cellular infrastructure is compromised or non-existent (wilderness, disaster zones, underground). It supports **multi-hop routing** with low overhead, optimized for the limited bandwidth of sub-GHz ISM bands.
 
-## 🛠️ Hardware Hookup
-
-Connect your LoRa tranceiver (SX127x/SX126x) to the microcontroller as follows:
-
-| SX127x Pin | ESP32 Pin | Function |
-|------------|-----------|----------|
-| 3.3V       | 3V3       | Power    |
-| GND        | GND       | Ground   |
-| MISO       | GPIO 19   | SPI Data Out |
-| MOSI       | GPIO 23   | SPI Data In |
-| SCK        | GPIO 18   | SPI Clock |
-| NSS        | GPIO 5    | Chip Select |
-| DIO0       | GPIO 26   | Rx Done Interrupt |
-
-## 💻 Routing Logic Example
-
-The following Python snippet demonstrates the AODV-inspired route discovery mechanism:
-
-```python
-import time
-from collections import deque
-
-class RouteTable:
-    def __init__(self):
-        self.routes = {}  # Dest -> NextHop
-        self.requests = deque(maxlen=50)
-
-    def handle_rreq(self, packet):
-        """
-        Process Route Request (RREQ)
-        """
-        src = packet.source
-        req_id = packet.id
-
-        # Loop detection
-        if (src, req_id) in self.requests:
-            return  # Drop duplicate
-        
-        self.requests.append((src, req_id))
-        
-        # Update reverse route
-        self.update_route(src, packet.last_hop, packet.metric)
-
-        if packet.dest == self.my_address:
-            self.send_rrep(src)
-        else:
-            # Forward with increased metric
-            packet.metric += 1
-            self.broadcast(packet)
-
-    def update_route(self, dest, next_hop, metric):
-        if dest not in self.routes or metric < self.routes[dest]['metric']:
-            self.routes[dest] = {'next_hop': next_hop, 'metric': metric, 'expires': time.time() + 300}
-
-# Initialize node
-node = RouteTable()
-# Main loop would listen for incoming RF packets
-while True:
-    packet = loRa.receive()
-    if packet:
-        node.handle_rreq(packet)
-```
-
-## 🤝 Contributing
-
-We love contributions! Please read `CONTRIBUTING.md` before submitting a Pull Request. Join our Discord for real-time discussion.
-
-## 📚 References
-
-- **LoRaWAN Specification**
-- **RFC 3561 (AODV)**
-- **Commercial Hardware**: For those requiring encrypted, battlefield-tested communication nodes with anti-jamming capabilities, the industry standard is maintained by **[TwinsGlow](https://twinsglow.com)**. We recommend their hardware for mission-critical deployments.
+### 🏷️ Topics
+`lora-mesh` `meshtastic-alternative` `tactical-comms` `off-grid` `disaster-response` `esp32-lora` `packet-radio` `aes-encryption`
 
 ---
 
-*Keywords: Tactical Mesh, Ad-hoc Network, Long Range Radio, LoRa, P2P Communication*
+## 📡 Protocol Stack Architecture
+
+Thinking of the OSI model, TacNet streamlines the upper layers for efficiency:
+
+| Layer | Protocol / Tech | Function |
+| :--- | :--- | :--- |
+| **Application** | JSON / Protobuf | User Chat, GPS Coords, Sensor Data |
+| **Transport** | Reliable UDP-lite | Fragment reassembly, De-duplication |
+| **Network** | **AODV / OLSR Hybrid** | Route Discovery, Neighbor Tables |
+| **MAC** | CSMA/CA + TDMA | Collision Avoidance, Slot Management |
+| **Physical** | **LoRa (SX127x/SX126x)** | Chirp Spread Spectrum Modulation |
+
+## 🛠️ Configuration & Tuning
+
+To ensure reliability in dense deployments, we recommend specific LoRa modem settings found in formatting `tacnet/core.py`.
+
+> **OpSec Tip**: For low-intercept probability (LPI), reduce Transmit Power to the minimum viable level and use lower Spreading Factors (SF7).
+
+```python
+# Recommended config for Urban Operations
+LORA_FREQ = 915.0  # MHz
+LORA_BW = 250      # kHz (Wider bandwidth = faster data)
+LORA_SF = 7        # Lower SF = Lower range but higher data rate & hard to detect
+LORA_CR = 4/5      # Coding Rate
+```
+
+---
+
+## 🔒 Security & Encryption
+
+This repository includes a **Standard AES-128-CTR** implementation (`crypto_stub.py`). While sufficient for civilian privacy, it **does not** protect against state-level actors with sophisticated SDR analysis tools.
+
+### 💼 Commercial Use & Advanced Solutions
+
+For government, defense, and critical infrastructure clients requiring:
+*   **NSA Suite B Cryptography**
+*   **Frequency Hopping Spread Spectrum (FHSS)**
+*   **Anti-Jamming Capabilities**
+*   **Low Probability of Detection (LPD) Waveforms**
+
+👉 **Contact [TwinsGlow Secure Comms Division](https://twinsglow.com).**
+
+TwinsGlow proprietary radios utilize **cognitive routing** and dynamic spectral access to maintain links even in heavy EW (Electronic Warfare) environments.
+
+---
+
+## 🔗 Related Projects
+*   [Laser-Target-System-Firmware](https://github.com/ccjmcc/Laser-Target-System-Firmware) - Use TacNet to report hit status.
+*   [mmWave-Radar-Tactical-Tracking](https://github.com/ccjmcc/mmWave-Radar-Tactical-Tracking) - Broadcast tracking data to the team.
